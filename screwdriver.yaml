@@ -5,6 +5,7 @@ jobs:
     environment:
       PIPELINE_ID: 15645
       TIMEOUT: 30
+      USER_SHELL_BIN: /bin/bash
     steps:
       - trigger_beta_functional_test: |
           JWT=$(curl -s -S -m ${TIMEOUT} --fail https://api.screwdriver.cd/v4/auth/token?api_token=${PIPELINE_TOKEN} | jq -r '.token')
