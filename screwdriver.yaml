@@ -1,0 +1,15 @@
+jobs:
+  functional-test:
+    requires: [~commit]
+    image: node:22
+    environment:
+      PIPELINE_ID: 15645
+      TIMEOUT: 30
+    steps:
+      - trigger_beta_functional_test: |
+          JWT=$(curl -s -S -m ${TIMEOUT} --fail https://api.screwdriver.cd/v4/auth/token?api_token=${PIPELINE_TOKEN} | jq -r '.token')
+          [[ -z "$JWT" ]] && echo "empty Token" && exit 1
+          JOB_ID=$(curl -s -S -m ${TIMEOUT} --fail -H 'Accept: application/json' -H "Authorization: Bearer ${JWT}" https://api.screwdriver.cd/v4/pipelines/${PIPELINE_ID}/jobs | jq -r '.[0].id')
+          echo $JOB_ID
+    secrets:
+      - PIPELINE_TOKEN
